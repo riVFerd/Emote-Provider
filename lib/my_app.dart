@@ -27,7 +27,11 @@ class _MyAppState extends State<MyApp> with WindowListener {
   void initState() {
     windowManager.addListener(this);
     windowManager.setPreventClose(true);
-    hotKeyManager.register(_hotKey, keyDownHandler: (_) {
+    hotKeyManager.register(_hotKey, keyDownHandler: (_) async {
+      if (await windowManager.isFocused()) {
+        windowManager.hide();
+        return;
+      }
       windowManager.show();
       windowManager.focus();
     });
