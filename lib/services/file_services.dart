@@ -30,4 +30,18 @@ class FileServices {
 
     return null;
   }
+
+  Future<File?> pickSingleImage() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['jpg', 'jpeg', 'png'],
+    );
+
+    if (result != null) {
+      if (result.files.isEmpty) return null;
+      return File(result.files.first.path!);
+    }
+
+    return null;
+  }
 }

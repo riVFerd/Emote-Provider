@@ -18,17 +18,20 @@ class EmojiPackHiveModelAdapter extends TypeAdapter<EmojiPackHiveModel> {
     };
     return EmojiPackHiveModel(
       name: fields[0] as String,
-      emojis: (fields[1] as List).cast<EmojiHiveModel>(),
+      emojiPath: fields[1] as String,
+      emojis: (fields[2] as List).cast<EmojiHiveModel>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, EmojiPackHiveModel obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
+      ..write(obj.emojiPath)
+      ..writeByte(2)
       ..write(obj.emojis);
   }
 

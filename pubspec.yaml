@@ -44,6 +44,8 @@ dependencies:
   hive_flutter: ^1.1.0
   flutter_bloc: ^8.1.5
   equatable: ^2.0.5
+  sidebarx: ^0.17.1
+  grouped_list: ^5.1.2
 
 dev_dependencies:
   flutter_test:

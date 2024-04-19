@@ -8,17 +8,22 @@ part 'emoji_pack_hive_model.g.dart';
 class EmojiPackHiveModel extends HiveObject implements EmojiPack {
   @override
   @HiveField(0)
-  final String name;
+  String name;
 
   @override
   @HiveField(1)
+  String emojiPath;
+
+  @override
+  @HiveField(2)
   final List<EmojiHiveModel> emojis;
 
-  EmojiPackHiveModel({required this.name, required this.emojis});
+  EmojiPackHiveModel({required this.name, required this.emojiPath, required this.emojis});
 
   factory EmojiPackHiveModel.fromEmojiPack(EmojiPack emojiPack) {
     return EmojiPackHiveModel(
       name: emojiPack.name,
+      emojiPath: emojiPack.emojiPath,
       emojis: emojiPack.emojis.map((emoji) => EmojiHiveModel.fromEmoji(emoji)).toList(),
     );
   }

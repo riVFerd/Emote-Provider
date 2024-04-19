@@ -1,6 +1,6 @@
 abstract class Emoji {
-  final String name;
-  final String emojiPath;
+  String name;
+  String emojiPath;
 
   Emoji({required this.name, required this.emojiPath});
 }

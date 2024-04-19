@@ -7,11 +7,11 @@ part 'emoji_hive_model.g.dart';
 class EmojiHiveModel extends HiveObject implements Emoji {
   @override
   @HiveField(0)
-  final String name;
+  String name;
 
   @override
   @HiveField(1)
-  final String emojiPath;
+  String emojiPath;
 
   EmojiHiveModel({required this.name, required this.emojiPath});
 

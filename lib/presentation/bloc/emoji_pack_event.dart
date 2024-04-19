@@ -12,10 +12,12 @@ final class LoadEmojiPacks extends EmojiPackEvent {
 }
 
 final class AddEmojiPack extends EmojiPackEvent {
-  const AddEmojiPack();
+  final EmojiPack emojiPack;
+
+  const AddEmojiPack(this.emojiPack);
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [emojiPack];
 }
 
 final class DeleteAllEmojiPack extends EmojiPackEvent {

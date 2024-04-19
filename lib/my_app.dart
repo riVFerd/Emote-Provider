@@ -32,8 +32,17 @@ class _MyAppState extends State<MyApp> with WindowListener {
         windowManager.hide();
         return;
       }
-      windowManager.show();
-      windowManager.focus();
+      windowManager.waitUntilReadyToShow(
+        const WindowOptions(
+          title: 'My App',
+          size: Size(800, 600),
+          titleBarStyle: TitleBarStyle.hidden,
+        ),
+        () async {
+          await windowManager.show();
+          await windowManager.focus();
+        },
+      );
     });
     initSystemTray();
     super.initState();

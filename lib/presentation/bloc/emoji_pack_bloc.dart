@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:dc_universal_emot/data/models/emoji/emoji_hive_model.dart';
 import 'package:dc_universal_emot/domain/repositories/emoji_pack_repository.dart';
 import 'package:dc_universal_emot/services/file_services.dart';
 import 'package:equatable/equatable.dart';
@@ -22,21 +21,7 @@ class EmojiPackBloc extends Bloc<EmojiPackEvent, EmojiPackState> {
     });
 
     on<AddEmojiPack>((event, emit) async {
-      final pickedImages = await fileServices.pickImages();
-      if (pickedImages == null) return;
-      if (pickedImages.isEmpty) return;
-      final emojiPack = EmojiPack(
-        name: 'New Pack',
-        emojis: pickedImages
-            .map(
-              (file) => EmojiHiveModel(
-                name: file.path.split('/').last,
-                emojiPath: file.absolute.path,
-              ),
-            )
-            .toList(),
-      );
-      await emojiPackRepository.addEmojiPack(emojiPack);
+      await emojiPackRepository.addEmojiPack(event.emojiPack);
       add(const LoadEmojiPacks());
     });
 

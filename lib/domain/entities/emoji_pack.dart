@@ -1,8 +1,9 @@
 import 'emoji.dart';
 
 class EmojiPack {
-  final String name;
+  String name;
+  String emojiPath;
   final List<Emoji> emojis;
 
-  EmojiPack({required this.name, required this.emojis});
+  EmojiPack({required this.name, required this.emojiPath, required this.emojis});
 }
