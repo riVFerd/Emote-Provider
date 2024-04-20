@@ -4,7 +4,9 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   hotkey_manager_linux
+  irondash_engine_context
   screen_retriever
+  super_native_extensions
   system_tray
   window_manager
 )

@@ -2,8 +2,10 @@ import 'package:dc_universal_emot/constants/color_constant.dart';
 import 'package:dc_universal_emot/data/repositories/emoji_pack_hive_repository.dart';
 import 'package:dc_universal_emot/presentation/pages/home/widgets/emoji_card.dart';
 import 'package:dc_universal_emot/presentation/pages/home/widgets/sidebar.dart';
+import 'package:dc_universal_emot/services/clipboard_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:window_manager/window_manager.dart';
 
 import '../../bloc/emoji_pack_bloc.dart';
 
@@ -59,7 +61,11 @@ class _HomePageState extends State<HomePage> {
                           runSpacing: 8,
                           children: state.emojiPacks[index].emojis.map((emoji) {
                             return EmojiCard(
-                              onTap: () {},
+                              onTap: () async {
+                                await ClipboardService.writeImage(emoji.emojiPath);
+                                await windowManager.hide();
+                                ClipboardService.simulatePaste();
+                              },
                               emoji: emoji,
                               height: 68,
                               width: 68,

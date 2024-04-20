@@ -21,7 +21,18 @@ class EmojiPackBloc extends Bloc<EmojiPackEvent, EmojiPackState> {
     });
 
     on<AddEmojiPack>((event, emit) async {
-      await emojiPackRepository.addEmojiPack(event.emojiPack);
+      final newEmojiPack = event.emojiPack;
+      newEmojiPack.emojiPath = await fileServices.saveImage(
+        newEmojiPack.emojiPath,
+        prefixName: 'pack_logo',
+      );
+
+      for (int index = 0; index < newEmojiPack.emojis.length; index++) {
+        final emoji = newEmojiPack.emojis[index];
+        newEmojiPack.emojis[index].emojiPath = await fileServices.saveImage(emoji.emojiPath);
+      }
+
+      await emojiPackRepository.addEmojiPack(newEmojiPack);
       add(const LoadEmojiPacks());
     });
 
