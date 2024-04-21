@@ -1,6 +1,6 @@
-import 'package:dc_universal_emot/data/repositories/emoji_pack_hive_repository.dart';
-import 'package:dc_universal_emot/presentation/pages/emoji_pack/emoji_pack_provider.dart';
-import 'package:dc_universal_emot/presentation/pages/emoji_pack/widgets/emoji_sidebar.dart';
+import 'package:dc_universal_emot/data/repositories/sticker_pack_hive_repository.dart';
+import 'package:dc_universal_emot/presentation/pages/sticker_pack/sticker_pack_provider.dart';
+import 'package:dc_universal_emot/presentation/pages/sticker_pack/widgets/sticker_sidebar.dart';
 import 'package:dc_universal_emot/presentation/widgets/app_loading.dart';
 import 'package:dc_universal_emot/presentation/widgets/emot_card.dart';
 import 'package:dc_universal_emot/services/clipboard_service.dart';
@@ -9,21 +9,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:window_manager/window_manager.dart';
 
-import '../../bloc/emoji_pack/emoji_pack_bloc.dart';
+import '../../bloc/sticker_pack/sticker_pack_bloc.dart';
 
-class EmojiPackPage extends StatefulWidget {
-  const EmojiPackPage({super.key});
+class StickerPackPage extends StatefulWidget {
+  const StickerPackPage({super.key});
 
   @override
-  State<EmojiPackPage> createState() => _EmojiPackPageState();
+  State<StickerPackPage> createState() => _StickerPackPageState();
 }
 
-class _EmojiPackPageState extends State<EmojiPackPage> {
+class _StickerPackPageState extends State<StickerPackPage> {
   @override
   void initState() {
-    EmojiPackHiveRepository.init(
+    StickerPackHiveRepository.init(
       onInitialized: () {
-        context.read<EmojiPackBloc>().add(const LoadEmojiPacks());
+        context.read<StickerPackBloc>().add(const LoadStickerPacks());
       },
     );
     super.initState();
@@ -35,16 +35,16 @@ class _EmojiPackPageState extends State<EmojiPackPage> {
       children: [
         Row(
           children: [
-            const EmojiSidebar(),
+            const StickerSidebar(),
             buildMainPage(context),
           ],
         ),
-        BlocBuilder<EmojiPackBloc, EmojiPackState>(
+        BlocBuilder<StickerPackBloc, StickerPackState>(
           builder: (_, state) {
-            if (state is! EmojiPackLoading) return const SizedBox();
+            if (state is! StickerPackLoading) return const SizedBox();
             return AppLoading(
               progress: state.progress,
-              message: 'Loading Emoji Pack...',
+              message: 'Loading Sticker Pack...',
             );
           },
         ),
@@ -52,21 +52,19 @@ class _EmojiPackPageState extends State<EmojiPackPage> {
     );
   }
 
-  // DUPLICATE CODE with StickerPackPage
-  // TODO: Implement the buildMainPage function with more reusable code
   Expanded buildMainPage(BuildContext context) {
     return Expanded(
       child: SizedBox(
         height: double.infinity,
         width: double.infinity,
-        child: BlocBuilder<EmojiPackBloc, EmojiPackState>(builder: (_, state) {
+        child: BlocBuilder<StickerPackBloc, StickerPackState>(builder: (_, state) {
           return ListView.builder(
-            controller: context.read<EmojiPackProvider>().scrollController,
-            itemCount: state.emojiPacks.length,
+            controller: context.read<StickerPackProvider>().scrollController,
+            itemCount: state.stickerPacks.length,
             padding: const EdgeInsets.all(16),
             itemBuilder: (_, index) {
               return AutoScrollTag(
-                controller: context.read<EmojiPackProvider>().scrollController,
+                controller: context.read<StickerPackProvider>().scrollController,
                 index: index,
                 key: ValueKey(index),
                 child: Column(
@@ -75,7 +73,7 @@ class _EmojiPackPageState extends State<EmojiPackPage> {
                     Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
-                        state.emojiPacks[index].name,
+                        state.stickerPacks[index].name,
                         style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -85,14 +83,14 @@ class _EmojiPackPageState extends State<EmojiPackPage> {
                     Wrap(
                       spacing: 8,
                       runSpacing: 8,
-                      children: state.emojiPacks[index].emojis.map((emoji) {
+                      children: state.stickerPacks[index].stickers.map((sticker) {
                         return EmotCard(
                           onTap: () async {
-                            await ClipboardService.writeImage(emoji.emojiPath);
+                            await ClipboardService.writeImage(sticker.stickerPath);
                             await windowManager.hide();
                             ClipboardService.simulatePaste();
                           },
-                          emotPath: emoji.emojiPath,
+                          emotPath: sticker.stickerPath,
                           height: 68,
                           width: 68,
                         );

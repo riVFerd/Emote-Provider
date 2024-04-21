@@ -8,16 +8,16 @@ import 'package:window_manager/window_manager.dart';
 
 /// Wrapper for the main app.
 /// Handling window events and hotkeys.
-class MyApp extends StatefulWidget {
+class MyWindow extends StatefulWidget {
   final Widget child;
 
-  const MyApp({super.key, required this.child});
+  const MyWindow({super.key, required this.child});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<MyWindow> createState() => _MyWindowState();
 }
 
-class _MyAppState extends State<MyApp> with WindowListener {
+class _MyWindowState extends State<MyWindow> with WindowListener {
   final _hotKey = HotKey(
     key: PhysicalKeyboardKey.keyQ,
     modifiers: [HotKeyModifier.alt],
