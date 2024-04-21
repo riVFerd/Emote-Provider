@@ -2,6 +2,7 @@ import 'package:dc_universal_emot/data/models/emoji/emoji_hive_model.dart';
 import 'package:dc_universal_emot/data/models/emoji_pack/emoji_pack_hive_model.dart';
 import 'package:dc_universal_emot/domain/entities/emoji_pack.dart';
 import 'package:dc_universal_emot/domain/repositories/emoji_pack_repository.dart';
+import 'package:dc_universal_emot/services/file_service.dart';
 import 'package:hive/hive.dart';
 
 import '../../constants/constant.dart';
@@ -36,6 +37,13 @@ class EmojiPackHiveRepository implements EmojiPackRepository {
 
   @override
   Future<void> deleteAllEmojiPack() {
+    final fileService = FileService();
+    _emojiPackBox.values.toList().forEach((emojiPack) {
+      fileService.deleteImage(emojiPack.emojiPath);
+      for (var emoji in emojiPack.emojis) {
+        fileService.deleteImage(emoji.emojiPath);
+      }
+    });
     return _emojiPackBox.clear();
   }
 }

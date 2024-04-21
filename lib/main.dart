@@ -24,10 +24,10 @@ void main() async {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: MyApp(
-          child: ChangeNotifierProvider(
-            create: (_) => EmojiPackProvider(),
-            child: const EmojiPackPage(),
+        home: ChangeNotifierProvider(
+          create: (context) => EmojiPackProvider(),
+          child: const MyApp(
+            child: EmojiPackPage(),
           ),
         ),
       ),

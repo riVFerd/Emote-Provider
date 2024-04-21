@@ -13,7 +13,11 @@ final class EmojiPackInitial extends EmojiPackState {
 }
 
 final class EmojiPackLoading extends EmojiPackState {
-  const EmojiPackLoading({required super.emojiPacks});
+  final double progress;
+  const EmojiPackLoading({required super.emojiPacks, required this.progress});
+
+  @override
+  List<Object> get props => [emojiPacks, progress];
 }
 
 final class EmojiPackLoaded extends EmojiPackState {

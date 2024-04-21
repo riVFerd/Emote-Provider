@@ -4,7 +4,7 @@ import 'package:dc_universal_emot/common/widget_extention.dart';
 import 'package:dc_universal_emot/data/models/emoji/emoji_hive_model.dart';
 import 'package:dc_universal_emot/data/models/emoji_pack/emoji_pack_hive_model.dart';
 import 'package:dc_universal_emot/presentation/bloc/emoji_pack_bloc.dart';
-import 'package:dc_universal_emot/services/file_services.dart';
+import 'package:dc_universal_emot/services/file_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,7 +18,7 @@ class AddEmojiPackDialog extends StatefulWidget {
 }
 
 class _AddEmojiPackDialogState extends State<AddEmojiPackDialog> {
-  final fileServices = FileServices();
+  final fileServices = FileService();
   final _textController = TextEditingController();
   File? _emojiPackImage;
   final List<File> _emojiImages = [];

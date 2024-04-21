@@ -34,9 +34,9 @@ class _MyAppState extends State<MyApp> with WindowListener {
       }
       windowManager.waitUntilReadyToShow(
         const WindowOptions(
-          title: 'My App',
-          size: Size(800, 600),
-          titleBarStyle: TitleBarStyle.hidden,
+          title: 'Emote provider',
+          size: Size(680, 540),
+          titleBarStyle: TitleBarStyle.normal,
         ),
         () async {
           await windowManager.show();
