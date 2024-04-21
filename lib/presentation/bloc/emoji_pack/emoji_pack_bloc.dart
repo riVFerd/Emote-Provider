@@ -3,7 +3,7 @@ import 'package:dc_universal_emot/domain/repositories/emoji_pack_repository.dart
 import 'package:dc_universal_emot/services/file_service.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../domain/entities/emoji_pack.dart';
+import '../../../domain/entities/emoji_pack.dart';
 
 part 'emoji_pack_event.dart';
 part 'emoji_pack_state.dart';
