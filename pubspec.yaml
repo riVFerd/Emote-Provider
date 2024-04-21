@@ -48,6 +48,8 @@ dependencies:
   grouped_list: ^5.1.2
   super_clipboard: ^0.7.0
   keypress_simulator: ^0.2.0
+  provider: ^6.1.2
+  scroll_to_index: ^3.0.1
 
 dev_dependencies:
   flutter_test:

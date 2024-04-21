@@ -1,9 +1,12 @@
 import 'dart:io';
 
+import 'package:dc_universal_emot/common/widget_extention.dart';
 import 'package:dc_universal_emot/constants/color_constant.dart';
 import 'package:dc_universal_emot/presentation/bloc/emoji_pack_bloc.dart';
+import 'package:dc_universal_emot/presentation/pages/emoji_pack/emoji_pack_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 import 'add_emoji_pack_dialog.dart';
 
@@ -19,25 +22,36 @@ class Sidebar extends StatelessWidget {
         color: darkGray200,
         borderRadius: BorderRadius.circular(16),
       ),
+      padding: const EdgeInsets.symmetric(vertical: 16),
       child: Column(
         children: [
           Expanded(
             child: BlocBuilder<EmojiPackBloc, EmojiPackState>(builder: (_, state) {
               return ListView.separated(
-                padding: const EdgeInsets.symmetric(vertical: 16),
                 itemCount: state.emojiPacks.length,
                 separatorBuilder: (_, __) => const SizedBox(height: 8),
                 itemBuilder: (_, index) {
                   final emojiPack = state.emojiPacks[index];
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: darkGray100,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    padding: const EdgeInsets.all(8),
-                    margin: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Image.file(
-                      File(emojiPack.emojiPath),
+                  return InkWell(
+                    onTap: () => context.read<EmojiPackProvider>().setSelectedEmojiPackIndex(index),
+                    child: Consumer<EmojiPackProvider>(
+                      child: Image.file(
+                        File(emojiPack.emojiPath),
+                      ),
+                      builder: (_, state, child) {
+                        return AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          decoration: BoxDecoration(
+                            color: darkGray100,
+                            borderRadius: BorderRadius.circular(
+                              state.selectedEmojiPackIndex == index ? 8 : 32,
+                            ),
+                          ),
+                          padding: const EdgeInsets.all(8),
+                          margin: const EdgeInsets.symmetric(horizontal: 16),
+                          child: child,
+                        );
+                      },
                     ),
                   );
                 },
@@ -54,7 +68,6 @@ class Sidebar extends StatelessWidget {
               // context.read<EmojiPackBloc>().add(const AddEmojiPack());
             },
             child: Container(
-              height: 80,
               width: double.infinity,
               decoration: BoxDecoration(
                 color: darkGray200,
@@ -70,7 +83,6 @@ class Sidebar extends StatelessWidget {
               context.read<EmojiPackBloc>().add(const DeleteAllEmojiPack());
             },
             child: Container(
-              height: 80,
               width: double.infinity,
               decoration: BoxDecoration(
                 color: darkGray200,
@@ -81,7 +93,9 @@ class Sidebar extends StatelessWidget {
               ),
             ),
           ),
-        ],
+        ].addSeparator(
+          separator: const SizedBox(height: 16),
+        ),
       ),
     );
   }

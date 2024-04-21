@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:dc_universal_emot/constants/color_constant.dart';
 import 'package:dc_universal_emot/domain/entities/emoji.dart';
 import 'package:flutter/material.dart';
 
@@ -20,17 +19,13 @@ class EmojiCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final borderRadius = ValueNotifier<double>(32.0);
+    final isHovered = ValueNotifier<bool>(false);
 
     return MouseRegion(
-      onEnter: (_) {
-        borderRadius.value = 8.0;
-      },
-      onExit: (_) {
-        borderRadius.value = 32.0;
-      },
+      onEnter: (_) => isHovered.value = true,
+      onExit: (_) => isHovered.value = false,
       child: ValueListenableBuilder(
-        valueListenable: borderRadius,
+        valueListenable: isHovered,
         child: InkWell(
           onTap: onTap,
           child: Container(
@@ -44,8 +39,8 @@ class EmojiCard extends StatelessWidget {
         ),
         builder: (context, value, child) {
           return Material(
-            color: darkGray200,
-            borderRadius: BorderRadius.circular(value),
+            color: isHovered.value ? Colors.white.withOpacity(0.2) : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
             clipBehavior: Clip.antiAlias,
             child: child,
           );

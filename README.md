@@ -1,4 +1,4 @@
-# dc_universal_emot
+# Emote Provider
 
 A new Flutter project.
 
