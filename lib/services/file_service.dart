@@ -11,7 +11,11 @@ class FileService {
   /// returning new path of the saved image.
   /// Optional [prefixName] parameter to add prefix name to the saved image,
   /// useful for identifying or avoiding duplicate file name.
-  Future<String> saveImage(String imagePath, {String? prefixName}) async {
+  Future<String> saveImage(
+    String imagePath, {
+    String? prefixName,
+    int savedImageHeight = 64,
+  }) async {
     final documentsDirectory = await getApplicationDocumentsDirectory();
     final documentsPath = path.join(documentsDirectory.path, APPLICATION_DIR_NAME);
 
@@ -26,7 +30,7 @@ class FileService {
 
     final cmd = img.Command()
       ..decodeImageFile(imagePath)
-      ..copyResize(height: 64)
+      ..copyResize(height: savedImageHeight)
       ..writeToFile(newPath);
     await cmd.executeThread();
 

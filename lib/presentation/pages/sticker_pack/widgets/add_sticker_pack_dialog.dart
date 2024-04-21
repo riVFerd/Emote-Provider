@@ -1,39 +1,39 @@
 import 'dart:io';
 
 import 'package:dc_universal_emot/common/widget_extention.dart';
-import 'package:dc_universal_emot/data/models/emoji/emoji_hive_model.dart';
-import 'package:dc_universal_emot/data/models/emoji_pack/emoji_pack_hive_model.dart';
-import 'package:dc_universal_emot/presentation/bloc/emoji_pack/emoji_pack_bloc.dart';
+import 'package:dc_universal_emot/data/models/sticker/sticker_hive_model.dart';
+import 'package:dc_universal_emot/data/models/sticker_pack/sticker_pack_hive_model.dart';
+import 'package:dc_universal_emot/presentation/bloc/sticker_pack/sticker_pack_bloc.dart';
 import 'package:dc_universal_emot/services/file_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../constants/color_constant.dart';
 
-class AddEmojiPackDialog extends StatefulWidget {
-  const AddEmojiPackDialog({super.key});
+class AddStickerPackDialog extends StatefulWidget {
+  const AddStickerPackDialog({super.key});
 
   @override
-  State<AddEmojiPackDialog> createState() => _AddEmojiPackDialogState();
+  State<AddStickerPackDialog> createState() => _AddStickerPackDialogState();
 }
 
-class _AddEmojiPackDialogState extends State<AddEmojiPackDialog> {
+class _AddStickerPackDialogState extends State<AddStickerPackDialog> {
   final fileServices = FileService();
   final _textController = TextEditingController();
-  File? _emojiPackImage;
-  final List<File> _emojiImages = [];
+  File? _stickerPackImage;
+  final List<File> _stickerImages = [];
 
   void _onSubmit(BuildContext context) {
-    if (_emojiPackImage == null || _emojiImages.isEmpty || _textController.text.isEmpty) return;
-    context.read<EmojiPackBloc>().add(
-          AddEmojiPack(
-            EmojiPackHiveModel(
+    if (_stickerPackImage == null || _stickerImages.isEmpty || _textController.text.isEmpty) return;
+    context.read<StickerPackBloc>().add(
+          AddStickerPack(
+            StickerPackHiveModel(
               name: _textController.text,
-              emojiPath: _emojiPackImage!.path,
-              emojis: _emojiImages.map((emojiImage) {
-                return EmojiHiveModel(
-                  name: emojiImage.path.split('/').last,
-                  emojiPath: emojiImage.path,
+              stickerPath: _stickerPackImage!.path,
+              stickers: _stickerImages.map((stickerImage) {
+                return StickerHiveModel(
+                  name: stickerImage.path.split('/').last,
+                  stickerPath: stickerImage.path,
                 );
               }).toList(),
             ),
@@ -64,31 +64,31 @@ class _AddEmojiPackDialogState extends State<AddEmojiPackDialog> {
           child: Column(
             children: [
               const Text(
-                'Add Emoji Pack',
+                'Add Sticker Pack',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24,
                 ),
               ),
-              _emojiPackImage == null
+              _stickerPackImage == null
                   ? _buildPickImageButton(
                       onPressed: () async {
                         final pickedImage = await fileServices.pickSingleImage();
                         if (pickedImage == null) return;
                         setState(() {
-                          _emojiPackImage = pickedImage;
+                          _stickerPackImage = pickedImage;
                         });
                       },
                     )
-                  : _buildEmojiImage(
+                  : _buildStickerImage(
                       onIconPressed: () async {
                         final pickedImage = await fileServices.pickSingleImage();
                         if (pickedImage == null) return;
                         setState(() {
-                          _emojiPackImage = pickedImage;
+                          _stickerPackImage = pickedImage;
                         });
                       },
-                      emojiImage: _emojiPackImage!,
+                      stickerImage: _stickerPackImage!,
                       icon: Icons.mode_edit,
                     ),
               TextField(
@@ -96,7 +96,7 @@ class _AddEmojiPackDialogState extends State<AddEmojiPackDialog> {
                 decoration: const InputDecoration(
                   fillColor: darkGray200,
                   filled: true,
-                  hintText: 'Emoji Pack Name',
+                  hintText: 'Sticker Pack Name',
                   hintStyle: TextStyle(color: Colors.white),
                 ),
                 style: const TextStyle(color: Colors.white),
@@ -115,19 +115,19 @@ class _AddEmojiPackDialogState extends State<AddEmojiPackDialog> {
                           final pickedImages = await fileServices.pickImages();
                           if (pickedImages == null) return;
                           setState(() {
-                            _emojiImages.addAll(pickedImages);
+                            _stickerImages.addAll(pickedImages);
                           });
                         },
                       ),
-                      ..._emojiImages.map((emojiImage) {
-                        return _buildEmojiImage(
+                      ..._stickerImages.map((stickerImage) {
+                        return _buildStickerImage(
                           height: 64,
                           width: 64,
-                          emojiImage: emojiImage,
+                          stickerImage: stickerImage,
                           icon: Icons.delete,
                           onIconPressed: () {
                             setState(() {
-                              _emojiImages.remove(emojiImage);
+                              _stickerImages.remove(stickerImage);
                             });
                           },
                         );
@@ -138,7 +138,7 @@ class _AddEmojiPackDialogState extends State<AddEmojiPackDialog> {
               ),
               ElevatedButton(
                 onPressed: () => _onSubmit(context),
-                child: const Text('Add Emoji Pack'),
+                child: const Text('Add Sticker Pack'),
               ),
               const SizedBox(height: 8),
             ].addSeparator(
@@ -171,12 +171,12 @@ class _AddEmojiPackDialogState extends State<AddEmojiPackDialog> {
     );
   }
 
-  Widget _buildEmojiImage({
+  Widget _buildStickerImage({
     double height = 84,
     double width = 84,
     required IconData icon,
     required VoidCallback onIconPressed,
-    required File emojiImage,
+    required File stickerImage,
   }) {
     return Container(
       height: height,
@@ -188,7 +188,7 @@ class _AddEmojiPackDialogState extends State<AddEmojiPackDialog> {
       padding: const EdgeInsets.all(8),
       child: Stack(
         children: [
-          Image.file(emojiImage),
+          Image.file(stickerImage),
           Positioned(
             right: 0,
             top: 0,
