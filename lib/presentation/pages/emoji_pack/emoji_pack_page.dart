@@ -1,4 +1,6 @@
+import 'package:dc_universal_emot/constants/color_constant.dart';
 import 'package:dc_universal_emot/data/repositories/emoji_pack_hive_repository.dart';
+import 'package:dc_universal_emot/domain/entities/emoji.dart';
 import 'package:dc_universal_emot/presentation/pages/emoji_pack/emoji_pack_provider.dart';
 import 'package:dc_universal_emot/presentation/pages/emoji_pack/widgets/emoji_sidebar.dart';
 import 'package:dc_universal_emot/presentation/widgets/app_loading.dart';
@@ -19,6 +21,8 @@ class EmojiPackPage extends StatefulWidget {
 }
 
 class _EmojiPackPageState extends State<EmojiPackPage> {
+  final _selectedEmoji = ValueNotifier<Emoji?>(null);
+
   @override
   void initState() {
     EmojiPackHiveRepository.init(
@@ -36,7 +40,33 @@ class _EmojiPackPageState extends State<EmojiPackPage> {
         Row(
           children: [
             const EmojiSidebar(),
-            buildMainPage(context),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  buildMainPage(context),
+                  Container(
+                    color: darkGray150,
+                    height: 46,
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    alignment: Alignment.centerLeft,
+                    child: ValueListenableBuilder(
+                      valueListenable: _selectedEmoji,
+                      builder: (_, emoji, __) {
+                        return Text(
+                          emoji?.name ?? '',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
         BlocBuilder<EmojiPackBloc, EmojiPackState>(
@@ -59,51 +89,56 @@ class _EmojiPackPageState extends State<EmojiPackPage> {
       child: SizedBox(
         height: double.infinity,
         width: double.infinity,
-        child: BlocBuilder<EmojiPackBloc, EmojiPackState>(builder: (_, state) {
-          return ListView.builder(
-            controller: context.read<EmojiPackProvider>().scrollController,
-            itemCount: state.emojiPacks.length,
-            padding: const EdgeInsets.all(16),
-            itemBuilder: (_, index) {
-              return AutoScrollTag(
-                controller: context.read<EmojiPackProvider>().scrollController,
-                index: index,
-                key: ValueKey(index),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Text(
-                        state.emojiPacks[index].name,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+        child: BlocBuilder<EmojiPackBloc, EmojiPackState>(
+          builder: (_, state) {
+            return ListView.builder(
+              controller: context.read<EmojiPackProvider>().scrollController,
+              itemCount: state.emojiPacks.length,
+              padding: const EdgeInsets.all(16),
+              itemBuilder: (_, index) {
+                return AutoScrollTag(
+                  controller: context.read<EmojiPackProvider>().scrollController,
+                  index: index,
+                  key: ValueKey(index),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Text(
+                          state.emojiPacks[index].name,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: state.emojiPacks[index].emojis.map((emoji) {
-                        return EmotCard(
-                          onTap: () async {
-                            await ClipboardService.writeImage(emoji.emojiPath);
-                            await windowManager.hide();
-                            ClipboardService.simulatePaste();
-                          },
-                          emotPath: emoji.emojiPath,
-                          height: 68,
-                          width: 68,
-                        );
-                      }).toList(),
-                    ),
-                  ],
-                ),
-              );
-            },
-          );
-        }),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: state.emojiPacks[index].emojis.map((emoji) {
+                          return EmotCard(
+                            onHover: () {
+                              _selectedEmoji.value = emoji;
+                            },
+                            onTap: () async {
+                              await ClipboardService.writeImage(emoji.emojiPath);
+                              await windowManager.hide();
+                              ClipboardService.simulatePaste();
+                            },
+                            emotPath: emoji.emojiPath,
+                            height: 68,
+                            width: 68,
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

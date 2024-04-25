@@ -32,7 +32,7 @@ class _AddEmojiPackDialogState extends State<AddEmojiPackDialog> {
               emojiPath: _emojiPackImage!.path,
               emojis: _emojiImages.map((emojiImage) {
                 return EmojiHiveModel(
-                  name: emojiImage.path.split('/').last,
+                  name: ':${FileService.getFileName(emojiImage.path)}:',
                   emojiPath: emojiImage.path,
                 );
               }).toList(),

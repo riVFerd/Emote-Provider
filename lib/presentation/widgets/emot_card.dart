@@ -7,6 +7,8 @@ class EmotCard extends StatelessWidget {
   final double height;
   final double width;
   final VoidCallback? onTap;
+  final VoidCallback? onHover;
+  final VoidCallback? onHoverOut;
 
   const EmotCard({
     super.key,
@@ -14,6 +16,8 @@ class EmotCard extends StatelessWidget {
     this.height = 68,
     this.width = 68,
     this.onTap,
+    this.onHover,
+    this.onHoverOut,
   });
 
   @override
@@ -21,8 +25,14 @@ class EmotCard extends StatelessWidget {
     final isHovered = ValueNotifier<bool>(false);
 
     return MouseRegion(
-      onEnter: (_) => isHovered.value = true,
-      onExit: (_) => isHovered.value = false,
+      onEnter: (_) {
+        isHovered.value = true;
+        onHover?.call();
+      },
+      onExit: (_) {
+        isHovered.value = false;
+        onHoverOut?.call();
+      },
       child: ValueListenableBuilder(
         valueListenable: isHovered,
         child: InkWell(

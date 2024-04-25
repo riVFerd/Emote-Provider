@@ -41,6 +41,7 @@ class EmojiSidebar extends StatelessWidget {
                   valueListenable: isHovered,
                   child: Image.file(
                     File(emojiPack.emojiPath),
+                    height: 32,
                   ),
                   builder: (_, isHovered, child) {
                     return AnimatedContainer(

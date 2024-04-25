@@ -32,7 +32,7 @@ class _AddStickerPackDialogState extends State<AddStickerPackDialog> {
               stickerPath: _stickerPackImage!.path,
               stickers: _stickerImages.map((stickerImage) {
                 return StickerHiveModel(
-                  name: stickerImage.path.split('/').last,
+                  name: ':${FileService.getFileName(stickerImage.path)}:',
                   stickerPath: stickerImage.path,
                   originalPath: stickerImage.path,
                 );

@@ -39,6 +39,7 @@ class StickerSidebar extends StatelessWidget {
                   valueListenable: isHovered,
                   child: Image.file(
                     File(stickerPack.stickerPath),
+                    height: 32,
                   ),
                   builder: (_, isHovered, child) {
                     return AnimatedContainer(

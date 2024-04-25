@@ -77,4 +77,8 @@ class FileService {
 
     return null;
   }
+
+  static String getFileName(String filePath) {
+    return path.basenameWithoutExtension(filePath);
+  }
 }
