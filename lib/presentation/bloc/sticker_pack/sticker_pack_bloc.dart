@@ -41,5 +41,10 @@ class StickerPackBloc extends Bloc<StickerPackEvent, StickerPackState> {
       await stickerPackRepository.deleteAllStickerPack();
       add(const LoadStickerPacks());
     });
+
+    on<DeleteStickerPack>((event, emit) async {
+      await stickerPackRepository.deleteStickerPack(event.stickerPack);
+      add(const LoadStickerPacks());
+    });
   }
 }

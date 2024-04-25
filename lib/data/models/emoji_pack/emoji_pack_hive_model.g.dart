@@ -17,21 +17,24 @@ class EmojiPackHiveModelAdapter extends TypeAdapter<EmojiPackHiveModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return EmojiPackHiveModel(
-      name: fields[0] as String,
-      emojiPath: fields[1] as String,
-      emojis: (fields[2] as List).cast<EmojiHiveModel>(),
+      id: fields[0] as String,
+      name: fields[1] as String,
+      emojiPath: fields[2] as String,
+      emojis: (fields[3] as List).cast<EmojiHiveModel>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, EmojiPackHiveModel obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
-      ..write(obj.name)
+      ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.emojiPath)
+      ..write(obj.name)
       ..writeByte(2)
+      ..write(obj.emojiPath)
+      ..writeByte(3)
       ..write(obj.emojis);
   }
 

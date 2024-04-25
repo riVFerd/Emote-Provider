@@ -28,10 +28,12 @@ class _AddEmojiPackDialogState extends State<AddEmojiPackDialog> {
     context.read<EmojiPackBloc>().add(
           AddEmojiPack(
             EmojiPackHiveModel(
+              id: DateTime.now().millisecondsSinceEpoch.toString(),
               name: _textController.text,
               emojiPath: _emojiPackImage!.path,
               emojis: _emojiImages.map((emojiImage) {
                 return EmojiHiveModel(
+                  id: DateTime.now().millisecondsSinceEpoch.toString(),
                   name: ':${FileService.getFileName(emojiImage.path)}:',
                   emojiPath: emojiImage.path,
                 );

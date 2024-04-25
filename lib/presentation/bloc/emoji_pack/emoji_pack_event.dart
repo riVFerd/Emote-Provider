@@ -26,3 +26,12 @@ final class DeleteAllEmojiPack extends EmojiPackEvent {
   @override
   List<Object?> get props => [];
 }
+
+final class DeleteEmojiPack extends EmojiPackEvent {
+  final EmojiPack emojiPack;
+
+  const DeleteEmojiPack(this.emojiPack);
+
+  @override
+  List<Object?> get props => [emojiPack];
+}

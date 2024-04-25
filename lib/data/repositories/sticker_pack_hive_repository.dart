@@ -46,4 +46,17 @@ class StickerPackHiveRepository implements StickerPackRepository {
     });
     return _stickerPackBox.clear();
   }
+
+  @override
+  Future<void> deleteStickerPack(StickerPack stickerPack) {
+    final keyToDelete =
+        _stickerPackBox.keys.firstWhere((key) => _stickerPackBox.get(key) == stickerPack);
+    final stickerPackToDelete = _stickerPackBox.get(keyToDelete);
+    final fileService = FileService();
+    fileService.deleteImage(stickerPackToDelete!.stickerPath);
+    for (var sticker in stickerPackToDelete.stickers) {
+      fileService.deleteImage(sticker.stickerPath);
+    }
+    return _stickerPackBox.delete(keyToDelete);
+  }
 }

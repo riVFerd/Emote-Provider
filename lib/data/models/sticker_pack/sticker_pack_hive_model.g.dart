@@ -17,21 +17,24 @@ class StickerPackHiveModelAdapter extends TypeAdapter<StickerPackHiveModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return StickerPackHiveModel(
-      name: fields[0] as String,
-      stickerPath: fields[1] as String,
-      stickers: (fields[2] as List).cast<StickerHiveModel>(),
+      id: fields[0] as String,
+      name: fields[1] as String,
+      stickerPath: fields[2] as String,
+      stickers: (fields[3] as List).cast<StickerHiveModel>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, StickerPackHiveModel obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
-      ..write(obj.name)
+      ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.stickerPath)
+      ..write(obj.name)
       ..writeByte(2)
+      ..write(obj.stickerPath)
+      ..writeByte(3)
       ..write(obj.stickers);
   }
 

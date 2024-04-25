@@ -8,20 +8,26 @@ part 'sticker_pack_hive_model.g.dart';
 class StickerPackHiveModel extends HiveObject implements StickerPack {
   @override
   @HiveField(0)
-  String name;
+  String id;
 
   @override
   @HiveField(1)
-  String stickerPath;
+  String name;
 
   @override
   @HiveField(2)
+  String stickerPath;
+
+  @override
+  @HiveField(3)
   final List<StickerHiveModel> stickers;
 
-  StickerPackHiveModel({required this.name, required this.stickerPath, required this.stickers});
+  StickerPackHiveModel(
+      {required this.id, required this.name, required this.stickerPath, required this.stickers});
 
   factory StickerPackHiveModel.fromStickerPack(StickerPack stickerPack) {
     return StickerPackHiveModel(
+      id: stickerPack.id,
       name: stickerPack.name,
       stickerPath: stickerPack.stickerPath,
       stickers:

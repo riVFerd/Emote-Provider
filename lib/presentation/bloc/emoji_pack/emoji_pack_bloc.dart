@@ -40,5 +40,10 @@ class EmojiPackBloc extends Bloc<EmojiPackEvent, EmojiPackState> {
       await emojiPackRepository.deleteAllEmojiPack();
       add(const LoadEmojiPacks());
     });
+
+    on<DeleteEmojiPack>((event, emit) async {
+      await emojiPackRepository.deleteEmojiPack(event.emojiPack);
+      add(const LoadEmojiPacks());
+    });
   }
 }

@@ -46,4 +46,16 @@ class EmojiPackHiveRepository implements EmojiPackRepository {
     });
     return _emojiPackBox.clear();
   }
+
+  @override
+  Future<void> deleteEmojiPack(EmojiPack emojiPack) {
+    final keyToDelete = _emojiPackBox.keys.firstWhere((key) => _emojiPackBox.get(key) == emojiPack);
+    final emojiPackToDelete = _emojiPackBox.get(keyToDelete);
+    final fileService = FileService();
+    fileService.deleteImage(emojiPackToDelete!.emojiPath);
+    for (var emoji in emojiPackToDelete.emojis) {
+      fileService.deleteImage(emojiPackToDelete.emojiPath);
+    }
+    return _emojiPackBox.delete(keyToDelete);
+  }
 }

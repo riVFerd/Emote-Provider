@@ -28,10 +28,12 @@ class _AddStickerPackDialogState extends State<AddStickerPackDialog> {
     context.read<StickerPackBloc>().add(
           AddStickerPack(
             StickerPackHiveModel(
+              id: DateTime.now().millisecondsSinceEpoch.toString(),
               name: _textController.text,
               stickerPath: _stickerPackImage!.path,
               stickers: _stickerImages.map((stickerImage) {
                 return StickerHiveModel(
+                  id: DateTime.now().millisecondsSinceEpoch.toString(),
                   name: ':${FileService.getFileName(stickerImage.path)}:',
                   stickerPath: stickerImage.path,
                   originalPath: stickerImage.path,
