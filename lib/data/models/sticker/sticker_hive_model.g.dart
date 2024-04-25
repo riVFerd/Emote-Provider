@@ -19,17 +19,20 @@ class StickerHiveModelAdapter extends TypeAdapter<StickerHiveModel> {
     return StickerHiveModel(
       name: fields[0] as String,
       stickerPath: fields[1] as String,
+      originalPath: fields[2] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, StickerHiveModel obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
-      ..write(obj.stickerPath);
+      ..write(obj.stickerPath)
+      ..writeByte(2)
+      ..write(obj.originalPath);
   }
 
   @override

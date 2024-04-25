@@ -34,6 +34,7 @@ class _AddStickerPackDialogState extends State<AddStickerPackDialog> {
                 return StickerHiveModel(
                   name: stickerImage.path.split('/').last,
                   stickerPath: stickerImage.path,
+                  originalPath: stickerImage.path,
                 );
               }).toList(),
             ),

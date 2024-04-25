@@ -9,6 +9,7 @@ import 'package:dc_universal_emot/presentation/widgets/my_window.dart';
 import 'package:dc_universal_emot/presentation/widgets/top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:provider/provider.dart';
 
 import 'constants/color_constant.dart';
@@ -30,6 +31,7 @@ class App extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
@@ -49,11 +51,18 @@ class App extends StatelessWidget {
                   Expanded(
                     child: Consumer<AppProvider>(
                       builder: (_, state, __) {
-                        if (state.currentTab == TabMode.emoji) {
-                          return const EmojiPackPage();
-                        } else {
-                          return const StickerPackPage();
-                        }
+                        // check if the state is not null
+                        return switch (state.currentTab) {
+                          TabMode.emoji => const EmojiPackPage(),
+                          TabMode.sticker => const StickerPackPage(),
+                          TabMode.settings => Container(
+                              child: HotKeyRecorder(
+                                onHotKeyRecorded: (hotKey) {
+                                  print('HotKey recorded: $hotKey');
+                                },
+                              ),
+                            ),
+                        };
                       },
                     ),
                   ),
@@ -81,4 +90,5 @@ class AppProvider with ChangeNotifier {
 enum TabMode {
   emoji,
   sticker,
+  settings,
 }

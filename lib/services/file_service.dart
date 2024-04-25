@@ -28,11 +28,19 @@ class FileService {
     final uniqueFileName = '${prefixName ?? ''}-$timestamp-$originalFileName';
     final newPath = path.join(documentsPath, uniqueFileName);
 
-    final cmd = img.Command()
-      ..decodeImageFile(imagePath)
-      ..copyResize(height: savedImageHeight)
-      ..writeToFile(newPath);
-    await cmd.executeThread();
+    // Load the original image
+    final originalImageBytes = await File(imagePath).readAsBytes();
+    img.Image? originalImage = img.decodeImage(originalImageBytes);
+
+    // Resize the image while maintaining the aspect ratio
+    img.Image resizedImage = img.copyResize(
+      originalImage!,
+      height: savedImageHeight,
+      interpolation: img.Interpolation.cubic,
+    );
+
+    // Save the resized image
+    await File(newPath).writeAsBytes(img.encodePng(resizedImage));
 
     return newPath;
   }

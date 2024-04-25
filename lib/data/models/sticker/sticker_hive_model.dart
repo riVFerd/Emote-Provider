@@ -13,12 +13,17 @@ class StickerHiveModel extends HiveObject implements Sticker {
   @HiveField(1)
   String stickerPath;
 
-  StickerHiveModel({required this.name, required this.stickerPath});
+  @override
+  @HiveField(2)
+  String originalPath;
+
+  StickerHiveModel({required this.name, required this.stickerPath, required this.originalPath});
 
   factory StickerHiveModel.fromSticker(Sticker sticker) {
     return StickerHiveModel(
       name: sticker.name,
       stickerPath: sticker.stickerPath,
+      originalPath: sticker.originalPath,
     );
   }
 }
