@@ -25,16 +25,28 @@ class TopBar extends StatelessWidget {
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          buildTabButton(
-            onTap: () => context.read<AppProvider>().setCurrentTab(TabMode.emoji),
-            title: 'Emoji',
-            tabMode: TabMode.emoji,
+          Row(
+            children: [
+              buildTabButton(
+                onTap: () => context.read<AppProvider>().setCurrentTab(TabMode.emoji),
+                title: 'Emoji',
+                tabMode: TabMode.emoji,
+              ),
+              buildTabButton(
+                onTap: () => context.read<AppProvider>().setCurrentTab(TabMode.sticker),
+                title: 'Sticker',
+                tabMode: TabMode.sticker,
+              ),
+            ].addSeparator(
+              separator: const SizedBox(width: 8),
+            ),
           ),
           buildTabButton(
-            onTap: () => context.read<AppProvider>().setCurrentTab(TabMode.sticker),
-            title: 'Sticker',
-            tabMode: TabMode.sticker,
+            onTap: () => context.read<AppProvider>().setCurrentTab(TabMode.settings),
+            title: 'Settings',
+            tabMode: TabMode.settings,
           ),
         ].addSeparator(
           separator: const SizedBox(width: 8),

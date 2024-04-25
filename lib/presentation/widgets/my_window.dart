@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:context_menus/context_menus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
@@ -63,7 +64,7 @@ class _MyWindowState extends State<MyWindow> with WindowListener {
 
   @override
   Widget build(BuildContext context) {
-    return widget.child;
+    return ContextMenuOverlay(child: widget.child);
   }
 }
 

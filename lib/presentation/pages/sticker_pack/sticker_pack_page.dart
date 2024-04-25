@@ -1,3 +1,4 @@
+import 'package:context_menus/context_menus.dart';
 import 'package:dc_universal_emot/data/repositories/sticker_pack_hive_repository.dart';
 import 'package:dc_universal_emot/presentation/pages/sticker_pack/sticker_pack_provider.dart';
 import 'package:dc_universal_emot/presentation/pages/sticker_pack/widgets/sticker_sidebar.dart';
@@ -84,15 +85,40 @@ class _StickerPackPageState extends State<StickerPackPage> {
                       spacing: 8,
                       runSpacing: 8,
                       children: state.stickerPacks[index].stickers.map((sticker) {
-                        return EmotCard(
-                          onTap: () async {
-                            await ClipboardService.writeImage(sticker.stickerPath);
-                            await windowManager.hide();
-                            ClipboardService.simulatePaste();
-                          },
-                          emotPath: sticker.stickerPath,
-                          height: 68,
-                          width: 68,
+                        return ContextMenuRegion(
+                          contextMenu: TextButton(
+                            onPressed: () async {
+                              try {
+                                await ClipboardService.writeImage(sticker.originalPath);
+                                await windowManager.hide();
+                                if (context.mounted) context.contextMenuOverlay.hide();
+                                ClipboardService.simulatePaste();
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Failed, the original file is missing.'),
+                                  ),
+                                );
+                              }
+                            },
+                            style: TextButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: const Text('Send Original Image'),
+                          ),
+                          child: EmotCard(
+                            onTap: () async {
+                              await ClipboardService.writeImage(sticker.stickerPath);
+                              await windowManager.hide();
+                              ClipboardService.simulatePaste();
+                            },
+                            emotPath: sticker.stickerPath,
+                            height: 68,
+                            width: 68,
+                          ),
                         );
                       }).toList(),
                     ),
