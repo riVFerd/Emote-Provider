@@ -5,4 +5,5 @@ abstract class StickerPackRepository {
   Future<void> addStickerPack(StickerPack stickerPack);
   Future<void> deleteAllStickerPack();
   Future<void> deleteStickerPack(StickerPack stickerPack);
+  Future<StickerPack> getStickersByName(String stickerName);
 }

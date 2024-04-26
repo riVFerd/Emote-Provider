@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:context_menus/context_menus.dart';
+import 'package:dc_universal_emot/app.dart';
 import 'package:dc_universal_emot/constants/color_constant.dart';
 import 'package:dc_universal_emot/domain/entities/emoji_pack.dart';
 import 'package:dc_universal_emot/presentation/bloc/emoji_pack/emoji_pack_bloc.dart';
@@ -26,6 +27,7 @@ class EmojiSidebar extends StatelessWidget {
         builder: (_) => const AddEmojiPackDialog(),
       ),
       onDeleteAll: () => context.read<EmojiPackBloc>().add(const DeleteAllEmojiPack()),
+      buildWhen: (_, current) => !(current is EmojiPackLoaded && current.isSearching),
       buildList: (context, state) {
         // DUPLICATE CODE with StickerSidebar
         // TODO: Implement the buildList function with more reusable code
@@ -54,7 +56,14 @@ class EmojiSidebar extends StatelessWidget {
                   infoTextStyle: TextStyle(color: Colors.white),
                 ),
                 child: InkWell(
-                  onTap: () => context.read<EmojiPackProvider>().setSelectedEmojiPackIndex(index),
+                  onTap: () {
+                    final currentState = context.read<EmojiPackBloc>().state;
+                    if (currentState is EmojiPackLoaded && currentState.isSearching) {
+                      context.read<AppProvider>().clearSearch();
+                      context.read<EmojiPackBloc>().add(const LoadEmojiPacks());
+                    }
+                    context.read<EmojiPackProvider>().setSelectedEmojiPackIndex(index);
+                  },
                   child: MouseRegion(
                     onEnter: (_) => isHovered.value = true,
                     onExit: (_) => isHovered.value = false,

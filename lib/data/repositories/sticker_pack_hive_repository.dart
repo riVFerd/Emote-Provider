@@ -59,4 +59,26 @@ class StickerPackHiveRepository implements StickerPackRepository {
     }
     return _stickerPackBox.delete(keyToDelete);
   }
+
+  @override
+  Future<StickerPack> getStickersByName(String stickerName) async {
+    final searchedStickers = _stickerPackBox.values
+        .toList()
+        .map((stickerPack) {
+          return stickerPack.stickers;
+        })
+        .expand((sticker) => sticker)
+        .toList()
+        .where(
+          (sticker) {
+            return sticker.name.toLowerCase().contains(stickerName.toLowerCase());
+          },
+        );
+    return StickerPack(
+      id: '',
+      name: 'Search Result',
+      stickerPath: '',
+      stickers: searchedStickers.toList(),
+    );
+  }
 }

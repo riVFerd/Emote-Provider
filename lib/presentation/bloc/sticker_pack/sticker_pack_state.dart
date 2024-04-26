@@ -21,5 +21,10 @@ final class StickerPackLoading extends StickerPackState {
 }
 
 final class StickerPackLoaded extends StickerPackState {
-  const StickerPackLoaded({required super.stickerPacks});
+  final bool isSearching;
+
+  const StickerPackLoaded({required super.stickerPacks, this.isSearching = false});
+
+  @override
+  List<Object> get props => [stickerPacks, isSearching];
 }

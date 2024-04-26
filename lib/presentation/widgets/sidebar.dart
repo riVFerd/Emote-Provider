@@ -10,6 +10,7 @@ class Sidebar<T, B extends BlocBase<S>, S> extends StatelessWidget {
   final VoidCallback onAdd;
   final VoidCallback onDeleteAll;
   final Widget Function(BuildContext, S) buildList;
+  final bool Function(S, S)? buildWhen;
 
   const Sidebar({
     super.key,
@@ -18,6 +19,7 @@ class Sidebar<T, B extends BlocBase<S>, S> extends StatelessWidget {
     required this.buildList,
     required this.onAdd,
     required this.onDeleteAll,
+    this.buildWhen,
   });
 
   @override
@@ -33,6 +35,7 @@ class Sidebar<T, B extends BlocBase<S>, S> extends StatelessWidget {
         children: [
           Expanded(
             child: BlocBuilder<B, S>(
+              buildWhen: buildWhen,
               builder: (_, state) => buildList(context, state),
             ),
           ),

@@ -54,8 +54,25 @@ class EmojiPackHiveRepository implements EmojiPackRepository {
     final fileService = FileService();
     fileService.deleteImage(emojiPackToDelete!.emojiPath);
     for (var emoji in emojiPackToDelete.emojis) {
-      fileService.deleteImage(emojiPackToDelete.emojiPath);
+      fileService.deleteImage(emoji.emojiPath);
     }
     return _emojiPackBox.delete(keyToDelete);
+  }
+
+  @override
+  Future<EmojiPack> getEmojiByName(String emojiName) async {
+    final searchedEmojis = _emojiPackBox.values
+        .map(
+          (emojiPack) => emojiPack.emojis.where(
+            (emoji) => emoji.name.toLowerCase().contains(emojiName.toLowerCase()),
+          ),
+        )
+        .expand((emoji) => emoji);
+    return EmojiPack(
+      id: '',
+      name: 'Search Result',
+      emojiPath: '',
+      emojis: searchedEmojis.toList(),
+    );
   }
 }

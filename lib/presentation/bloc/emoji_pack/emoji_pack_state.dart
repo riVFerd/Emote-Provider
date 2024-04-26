@@ -21,5 +21,10 @@ final class EmojiPackLoading extends EmojiPackState {
 }
 
 final class EmojiPackLoaded extends EmojiPackState {
-  const EmojiPackLoaded({required super.emojiPacks});
+  final bool isSearching;
+
+  const EmojiPackLoaded({required super.emojiPacks, this.isSearching = false});
+
+  @override
+  List<Object> get props => [emojiPacks, isSearching];
 }

@@ -45,5 +45,14 @@ class EmojiPackBloc extends Bloc<EmojiPackEvent, EmojiPackState> {
       await emojiPackRepository.deleteEmojiPack(event.emojiPack);
       add(const LoadEmojiPacks());
     });
+
+    on<SearchEmojis>((event, emit) async {
+      if (event.emojiName.isEmpty) {
+        add(const LoadEmojiPacks());
+        return;
+      }
+      final emojiPacks = await emojiPackRepository.getEmojiByName(event.emojiName);
+      emit(EmojiPackLoaded(emojiPacks: [emojiPacks], isSearching: true));
+    });
   }
 }

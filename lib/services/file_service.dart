@@ -14,7 +14,7 @@ class FileService {
   Future<String> saveImage(
     String imagePath, {
     String? prefixName,
-    int savedImageHeight = 64,
+    int savedImageHeight = 50,
   }) async {
     final documentsDirectory = await getApplicationDocumentsDirectory();
     final documentsPath = path.join(documentsDirectory.path, APPLICATION_DIR_NAME);
@@ -32,6 +32,7 @@ class FileService {
     final originalImageBytes = await File(imagePath).readAsBytes();
     img.Image? originalImage = img.decodeImage(originalImageBytes);
 
+    // TODO: dont resize the image if the image is already small
     // Resize the image while maintaining the aspect ratio
     img.Image resizedImage = img.copyResize(
       originalImage!,

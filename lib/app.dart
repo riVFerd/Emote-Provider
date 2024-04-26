@@ -78,12 +78,18 @@ class App extends StatelessWidget {
 
 class AppProvider with ChangeNotifier {
   TabMode _currentTab = TabMode.emoji;
+  final _searchController = TextEditingController();
 
   TabMode get currentTab => _currentTab;
+  TextEditingController get searchController => _searchController;
 
   void setCurrentTab(TabMode tab) {
     _currentTab = tab;
     notifyListeners();
+  }
+
+  void clearSearch() {
+    _searchController.clear();
   }
 }
 

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:context_menus/context_menus.dart';
+import 'package:dc_universal_emot/app.dart';
 import 'package:dc_universal_emot/constants/color_constant.dart';
 import 'package:dc_universal_emot/domain/entities/sticker_pack.dart';
 import 'package:dc_universal_emot/presentation/bloc/sticker_pack/sticker_pack_bloc.dart';
@@ -26,6 +27,7 @@ class StickerSidebar extends StatelessWidget {
         builder: (_) => const AddStickerPackDialog(),
       ),
       onDeleteAll: () => context.read<StickerPackBloc>().add(const DeleteAllStickerPack()),
+      buildWhen: (_, current) => !(current is StickerPackLoaded && current.isSearching),
       buildList: (context, state) {
         return ListView.separated(
           itemCount: state.stickerPacks.length,
@@ -52,8 +54,14 @@ class StickerSidebar extends StatelessWidget {
                   infoTextStyle: TextStyle(color: Colors.white),
                 ),
                 child: InkWell(
-                  onTap: () =>
-                      context.read<StickerPackProvider>().setSelectedStickerPackIndex(index),
+                  onTap: () {
+                    final currentState = context.read<StickerPackBloc>().state;
+                    if (currentState is StickerPackLoaded && currentState.isSearching) {
+                      context.read<AppProvider>().clearSearch();
+                      context.read<StickerPackBloc>().add(const LoadStickerPacks());
+                    }
+                    context.read<StickerPackProvider>().setSelectedStickerPackIndex(index);
+                  },
                   child: MouseRegion(
                     onEnter: (_) => isHovered.value = true,
                     onExit: (_) => isHovered.value = false,
