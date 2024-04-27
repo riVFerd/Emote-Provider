@@ -38,13 +38,34 @@ class EmojiSidebar extends StatelessWidget {
             final emojiPack = state.emojiPacks[index];
             final isHovered = ValueNotifier(false);
             return ContextMenuRegion(
-              contextMenu: AppContextMenuButton(
-                text: 'Delete ${emojiPack.name} Sticker Pack',
-                onPressed: () {
-                  // TODO: give a confirmation dialog before deleting
-                  context.read<EmojiPackBloc>().add(DeleteEmojiPack(emojiPack));
-                  context.contextMenuOverlay.hide();
-                },
+              contextMenu: Container(
+                decoration: BoxDecoration(
+                  color: darkGray150,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    AppContextMenuButton(
+                      text: 'Edit ${emojiPack.name} Sticker Pack',
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (_) => AddEmojiPackDialog(emojiPack: emojiPack),
+                        );
+                        context.contextMenuOverlay.hide();
+                      },
+                    ),
+                    AppContextMenuButton(
+                      text: 'Delete ${emojiPack.name} Sticker Pack',
+                      onPressed: () {
+                        // TODO: give a confirmation dialog before deleting
+                        context.read<EmojiPackBloc>().add(DeleteEmojiPack(emojiPack));
+                        context.contextMenuOverlay.hide();
+                      },
+                    ),
+                  ],
+                ),
               ),
               child: InfoPopupWidget(
                 contentTitle: emojiPack.name,

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dc_universal_emot/common/widget_extention.dart';
 import 'package:dc_universal_emot/data/models/emoji/emoji_hive_model.dart';
 import 'package:dc_universal_emot/data/models/emoji_pack/emoji_pack_hive_model.dart';
+import 'package:dc_universal_emot/domain/entities/emoji_pack.dart';
 import 'package:dc_universal_emot/presentation/bloc/emoji_pack/emoji_pack_bloc.dart';
 import 'package:dc_universal_emot/services/file_service.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../constants/color_constant.dart';
 
 class AddEmojiPackDialog extends StatefulWidget {
-  const AddEmojiPackDialog({super.key});
+  final EmojiPack? emojiPack;
+  final bool isEdit;
+
+  const AddEmojiPackDialog({super.key, this.emojiPack}) : isEdit = emojiPack != null;
 
   @override
   State<AddEmojiPackDialog> createState() => _AddEmojiPackDialogState();
@@ -25,6 +29,14 @@ class _AddEmojiPackDialogState extends State<AddEmojiPackDialog> {
 
   void _onSubmit(BuildContext context) {
     if (_emojiPackImage == null || _emojiImages.isEmpty || _textController.text.isEmpty) return;
+    if (widget.isEdit) {
+      _updateEmojiPack();
+    } else {
+      _addEmojiPack();
+    }
+  }
+
+  void _addEmojiPack() {
     context.read<EmojiPackBloc>().add(
           AddEmojiPack(
             EmojiPackHiveModel(
@@ -44,6 +56,37 @@ class _AddEmojiPackDialogState extends State<AddEmojiPackDialog> {
     Navigator.of(context).pop();
   }
 
+  void _updateEmojiPack() {
+    if (widget.emojiPack == null) return;
+    context.read<EmojiPackBloc>().add(
+          UpdateEmojiPack(
+            EmojiPackHiveModel(
+              id: widget.emojiPack!.id,
+              name: _textController.text,
+              emojiPath: _emojiPackImage!.path,
+              emojis: _emojiImages.map((emojiImage) {
+                return EmojiHiveModel(
+                  id: DateTime.now().millisecondsSinceEpoch.toString(),
+                  name: ':${FileService.getFileName(emojiImage.path)}:',
+                  emojiPath: emojiImage.path,
+                );
+              }).toList(),
+            ),
+          ),
+        );
+    Navigator.of(context).pop();
+  }
+
+  @override
+  void initState() {
+    if (widget.isEdit) {
+      _textController.text = widget.emojiPack!.name;
+      _emojiPackImage = File(widget.emojiPack!.emojiPath);
+      _emojiImages.addAll(widget.emojiPack!.emojis.map((emoji) => File(emoji.emojiPath)));
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -51,7 +94,7 @@ class _AddEmojiPackDialogState extends State<AddEmojiPackDialog> {
         color: Colors.transparent,
         child: Container(
           padding: const EdgeInsets.all(16),
-          height: 400,
+          height: MediaQuery.of(context).size.height * 0.8,
           width: 400,
           decoration: BoxDecoration(
             color: darkGray100,
@@ -65,9 +108,9 @@ class _AddEmojiPackDialogState extends State<AddEmojiPackDialog> {
           ),
           child: Column(
             children: [
-              const Text(
-                'Add Emoji Pack',
-                style: TextStyle(
+              Text(
+                widget.isEdit ? 'Edit Emoji Pack' : 'Add Emoji Pack',
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 24,
                 ),
@@ -140,7 +183,7 @@ class _AddEmojiPackDialogState extends State<AddEmojiPackDialog> {
               ),
               ElevatedButton(
                 onPressed: () => _onSubmit(context),
-                child: const Text('Add Emoji Pack'),
+                child: Text('${widget.isEdit ? 'Update' : 'Add'} Emoji Pack'),
               ),
               const SizedBox(height: 8),
             ].addSeparator(
@@ -190,7 +233,10 @@ class _AddEmojiPackDialogState extends State<AddEmojiPackDialog> {
       padding: const EdgeInsets.all(8),
       child: Stack(
         children: [
-          Image.file(emojiImage),
+          Align(
+            alignment: Alignment.center,
+            child: Image.file(emojiImage),
+          ),
           Positioned(
             right: 0,
             top: 0,

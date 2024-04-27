@@ -16,6 +16,7 @@ class AppContextMenuButton extends StatelessWidget {
     return TextButton(
       onPressed: onPressed,
       style: TextButton.styleFrom(
+        alignment: Alignment.centerLeft,
         backgroundColor: darkGray150,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),

@@ -44,3 +44,12 @@ final class SearchEmojis extends EmojiPackEvent {
   @override
   List<Object?> get props => [emojiName];
 }
+
+final class UpdateEmojiPack extends EmojiPackEvent {
+  final EmojiPack emojiPack;
+
+  const UpdateEmojiPack(this.emojiPack);
+
+  @override
+  List<Object?> get props => [emojiPack];
+}
