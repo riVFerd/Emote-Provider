@@ -44,3 +44,12 @@ final class SearchStickers extends StickerPackEvent {
   @override
   List<Object?> get props => [stickerName];
 }
+
+final class UpdateStickerPack extends StickerPackEvent {
+  final StickerPack stickerPack;
+
+  const UpdateStickerPack(this.stickerPack);
+
+  @override
+  List<Object?> get props => [stickerPack];
+}

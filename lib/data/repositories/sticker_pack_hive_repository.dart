@@ -81,4 +81,18 @@ class StickerPackHiveRepository implements StickerPackRepository {
       stickers: searchedStickers.toList(),
     );
   }
+
+  @override
+  Future<StickerPack> getStickerPackById(String id) async {
+    final stickerPack = _stickerPackBox.values.firstWhere((stickerPack) => stickerPack.id == id);
+    return stickerPack;
+  }
+
+  @override
+  Future<void> updateStickerPack(StickerPack stickerPack) async {
+    final keyToUpdate = _stickerPackBox.keys.firstWhere((key) {
+      return (_stickerPackBox.get(key)?.id ?? 'no-id') == stickerPack.id;
+    });
+    await _stickerPackBox.put(keyToUpdate, StickerPackHiveModel.fromStickerPack(stickerPack));
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:dc_universal_emot/data/models/sticker/sticker_hive_model.dart';
 import 'package:dc_universal_emot/domain/repositories/sticker_pack_repository.dart';
 import 'package:dc_universal_emot/services/file_service.dart';
 import 'package:equatable/equatable.dart';
@@ -54,6 +55,57 @@ class StickerPackBloc extends Bloc<StickerPackEvent, StickerPackState> {
       }
       final stickerPack = await stickerPackRepository.getStickersByName(event.stickerName);
       emit(StickerPackLoaded(stickerPacks: [stickerPack], isSearching: true));
+    });
+
+    on<UpdateStickerPack>((event, emit) async {
+      emit(StickerPackLoading(stickerPacks: state.stickerPacks, progress: 0.0));
+
+      final oldStickerPack = await stickerPackRepository.getStickerPackById(event.stickerPack.id);
+      final newStickerPack = event.stickerPack;
+
+      // Update sticker pack name and image
+      oldStickerPack.name = newStickerPack.name;
+      if (oldStickerPack.stickerPath != newStickerPack.stickerPath) {
+        fileServices.deleteImage(oldStickerPack.stickerPath);
+        oldStickerPack.stickerPath = await fileServices.saveImage(newStickerPack.stickerPath);
+      }
+
+      // Delete old stickers that are not in the new sticker pack
+      for (int i = oldStickerPack.stickers.length - 1; i >= 0; i--) {
+        final oldSticker = oldStickerPack.stickers[i];
+        bool isSameSticker = newStickerPack.stickers.any(
+          (sticker) => sticker.stickerPath == oldSticker.stickerPath,
+        );
+        if (!isSameSticker) {
+          fileServices.deleteImage(oldSticker.stickerPath);
+          oldStickerPack.stickers.removeAt(i);
+        }
+        emit(StickerPackLoading(
+          stickerPacks: state.stickerPacks,
+          progress: 0.5,
+          message: 'Deleting old stickers...',
+        ));
+      }
+
+      // Add new stickers that are not in the old sticker pack
+      for (int i = 0; i < newStickerPack.stickers.length; i++) {
+        final newSticker = newStickerPack.stickers[i];
+        final isSameSticker = oldStickerPack.stickers.any(
+          (sticker) => sticker.stickerPath == newSticker.stickerPath,
+        );
+        if (!isSameSticker) {
+          newSticker.stickerPath = await fileServices.saveImage(newSticker.stickerPath);
+          oldStickerPack.stickers.add(StickerHiveModel.fromSticker(newSticker));
+        }
+        emit(StickerPackLoading(
+          stickerPacks: state.stickerPacks,
+          progress: (i + 1) / newStickerPack.stickers.length,
+          message: 'Adding new stickers...',
+        ));
+      }
+
+      await stickerPackRepository.updateStickerPack(event.stickerPack);
+      add(const LoadStickerPacks());
     });
   }
 }

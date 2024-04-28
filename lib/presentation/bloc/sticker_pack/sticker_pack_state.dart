@@ -14,7 +14,8 @@ final class StickerPackInitial extends StickerPackState {
 
 final class StickerPackLoading extends StickerPackState {
   final double progress;
-  const StickerPackLoading({required super.stickerPacks, required this.progress});
+  final String? message;
+  const StickerPackLoading({required super.stickerPacks, required this.progress, this.message});
 
   @override
   List<Object> get props => [stickerPacks, progress];

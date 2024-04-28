@@ -36,13 +36,34 @@ class StickerSidebar extends StatelessWidget {
             final stickerPack = state.stickerPacks[index];
             final isHovered = ValueNotifier(false);
             return ContextMenuRegion(
-              contextMenu: AppContextMenuButton(
-                text: 'Delete ${stickerPack.name} Sticker Pack',
-                onPressed: () {
-                  // TODO: give a confirmation dialog before deleting
-                  context.read<StickerPackBloc>().add(DeleteStickerPack(stickerPack));
-                  context.contextMenuOverlay.hide();
-                },
+              contextMenu: Container(
+                decoration: BoxDecoration(
+                  color: darkGray150,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    AppContextMenuButton(
+                      text: 'Edit ${stickerPack.name} Sticker Pack',
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (_) => AddStickerPackDialog(stickerPack: stickerPack),
+                        );
+                        context.contextMenuOverlay.hide();
+                      },
+                    ),
+                    AppContextMenuButton(
+                      text: 'Delete ${stickerPack.name} Sticker Pack',
+                      onPressed: () {
+                        // TODO: give a confirmation dialog before deleting
+                        context.read<StickerPackBloc>().add(DeleteStickerPack(stickerPack));
+                        context.contextMenuOverlay.hide();
+                      },
+                    ),
+                  ],
+                ),
               ),
               child: InfoPopupWidget(
                 contentTitle: stickerPack.name,
