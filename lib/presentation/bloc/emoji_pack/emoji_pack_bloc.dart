@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:dc_universal_emot/data/models/emoji/emoji_hive_model.dart';
 import 'package:dc_universal_emot/domain/repositories/emoji_pack_repository.dart';
 import 'package:dc_universal_emot/services/file_service.dart';
 import 'package:equatable/equatable.dart';
@@ -56,18 +57,53 @@ class EmojiPackBloc extends Bloc<EmojiPackEvent, EmojiPackState> {
     });
 
     on<UpdateEmojiPack>((event, emit) async {
-      double progress = 0.0;
-      emit(EmojiPackLoading(emojiPacks: state.emojiPacks, progress: progress));
+      emit(EmojiPackLoading(emojiPacks: state.emojiPacks, progress: 0.0));
 
-      final updatedEmojiPack = event.emojiPack;
-      // updatedEmojiPack.emojiPath = await fileServices.saveImage(updatedEmojiPack.emojiPath);
-      // for (int index = 0; index < updatedEmojiPack.emojis.length; index++) {
-      //   final emoji = updatedEmojiPack.emojis[index];
-      //   updatedEmojiPack.emojis[index].emojiPath = await fileServices.saveImage(emoji.emojiPath);
-      //   progress = (index + 1) / updatedEmojiPack.emojis.length;
-      //   emit(EmojiPackLoading(emojiPacks: state.emojiPacks, progress: progress));
-      // }
-      await emojiPackRepository.updateEmojiPack(updatedEmojiPack);
+      final oldEmojiPack = await emojiPackRepository.getEmojiPackById(event.emojiPack.id);
+      final newEmojiPack = event.emojiPack;
+
+      // Update emoji pack name and image
+      oldEmojiPack.name = newEmojiPack.name;
+      if (oldEmojiPack.emojiPath != newEmojiPack.emojiPath) {
+        fileServices.deleteImage(oldEmojiPack.emojiPath);
+        oldEmojiPack.emojiPath = await fileServices.saveImage(newEmojiPack.emojiPath);
+      }
+
+      // Delete old emojis that are not in the new emoji pack
+      for (int i = oldEmojiPack.emojis.length - 1; i >= 0; i--) {
+        final oldEmoji = oldEmojiPack.emojis[i];
+        bool isSameEmoji = newEmojiPack.emojis.any((emoji) {
+          return emoji.emojiPath == oldEmoji.emojiPath;
+        });
+        if (!isSameEmoji) {
+          fileServices.deleteImage(oldEmoji.emojiPath);
+          oldEmojiPack.emojis.removeAt(i);
+        }
+        emit(EmojiPackLoading(
+          emojiPacks: state.emojiPacks,
+          progress: 0.5,
+          message: 'Deleting old emojis...',
+        ));
+      }
+
+      // Add new emojis that are not in the old emoji pack
+      for (int i = 0; i < newEmojiPack.emojis.length; i++) {
+        final newEmoji = newEmojiPack.emojis[i];
+        final isSameEmoji = oldEmojiPack.emojis.any(
+          (emoji) => emoji.emojiPath == newEmoji.emojiPath,
+        );
+        if (!isSameEmoji) {
+          newEmoji.emojiPath = await fileServices.saveImage(newEmoji.emojiPath);
+          oldEmojiPack.emojis.add(EmojiHiveModel.fromEmoji(newEmoji));
+        }
+        emit(EmojiPackLoading(
+          emojiPacks: state.emojiPacks,
+          progress: (i + 1) / newEmojiPack.emojis.length,
+          message: 'Adding new emojis...',
+        ));
+      }
+
+      await emojiPackRepository.updateEmojiPack(oldEmojiPack);
       add(const LoadEmojiPacks());
     });
   }

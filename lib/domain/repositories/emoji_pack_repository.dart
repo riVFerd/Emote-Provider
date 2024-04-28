@@ -7,4 +7,5 @@ abstract class EmojiPackRepository {
   Future<void> deleteEmojiPack(EmojiPack emojiPack);
   Future<EmojiPack> getEmojiByName(String emojiName);
   Future<void> updateEmojiPack(EmojiPack emojiPack);
+  Future<EmojiPack> getEmojiPackById(String id);
 }

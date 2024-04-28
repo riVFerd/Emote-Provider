@@ -74,7 +74,7 @@ class _EmojiPackPageState extends State<EmojiPackPage> {
             if (state is! EmojiPackLoading) return const SizedBox();
             return AppLoading(
               progress: state.progress,
-              message: 'Loading Emoji Pack...',
+              message: state.message ?? 'Loading Emoji Pack...',
             );
           },
         ),
