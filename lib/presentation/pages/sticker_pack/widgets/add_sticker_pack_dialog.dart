@@ -4,6 +4,7 @@ import 'package:dc_universal_emot/common/widget_extention.dart';
 import 'package:dc_universal_emot/data/models/sticker/sticker_hive_model.dart';
 import 'package:dc_universal_emot/data/models/sticker_pack/sticker_pack_hive_model.dart';
 import 'package:dc_universal_emot/presentation/bloc/sticker_pack/sticker_pack_bloc.dart';
+import 'package:dc_universal_emot/presentation/widgets/add_pack_dialog.dart';
 import 'package:dc_universal_emot/services/file_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -74,7 +75,7 @@ class _AddStickerPackDialogState extends State<AddStickerPackDialog> {
                 ),
               ),
               _stickerPackImage == null
-                  ? _buildPickImageButton(
+                  ? buildPickImageButton(
                       onPressed: () async {
                         final pickedImage = await fileServices.pickSingleImage();
                         if (pickedImage == null) return;
@@ -83,7 +84,7 @@ class _AddStickerPackDialogState extends State<AddStickerPackDialog> {
                         });
                       },
                     )
-                  : _buildStickerImage(
+                  : buildImage(
                       onIconPressed: () async {
                         final pickedImage = await fileServices.pickSingleImage();
                         if (pickedImage == null) return;
@@ -91,7 +92,7 @@ class _AddStickerPackDialogState extends State<AddStickerPackDialog> {
                           _stickerPackImage = pickedImage;
                         });
                       },
-                      stickerImage: _stickerPackImage!,
+                      image: _stickerPackImage!,
                       icon: Icons.mode_edit,
                     ),
               TextField(
@@ -111,7 +112,7 @@ class _AddStickerPackDialogState extends State<AddStickerPackDialog> {
                     runSpacing: 8,
                     alignment: WrapAlignment.center,
                     children: [
-                      _buildPickImageButton(
+                      buildPickImageButton(
                         height: 64,
                         width: 64,
                         onPressed: () async {
@@ -123,10 +124,10 @@ class _AddStickerPackDialogState extends State<AddStickerPackDialog> {
                         },
                       ),
                       ..._stickerImages.map((stickerImage) {
-                        return _buildStickerImage(
+                        return buildImage(
                           height: 64,
                           width: 64,
-                          stickerImage: stickerImage,
+                          image: stickerImage,
                           icon: Icons.delete,
                           onIconPressed: () {
                             setState(() {
@@ -149,72 +150,6 @@ class _AddStickerPackDialogState extends State<AddStickerPackDialog> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildPickImageButton({
-    double height = 84,
-    double width = 84,
-    VoidCallback? onPressed,
-  }) {
-    return InkWell(
-      onTap: onPressed,
-      child: Container(
-        height: height,
-        width: width,
-        decoration: BoxDecoration(
-          color: darkGray200,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: const Center(
-          child: Icon(Icons.add, color: Colors.white),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStickerImage({
-    double height = 84,
-    double width = 84,
-    required IconData icon,
-    required VoidCallback onIconPressed,
-    required File stickerImage,
-  }) {
-    return Container(
-      height: height,
-      width: width,
-      decoration: BoxDecoration(
-        color: darkGray200,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      padding: const EdgeInsets.all(8),
-      child: Stack(
-        children: [
-          Image.file(stickerImage),
-          Positioned(
-            right: 0,
-            top: 0,
-            child: InkWell(
-              onTap: onIconPressed,
-              child: Container(
-                height: 24,
-                width: 24,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.8),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Center(
-                  child: Icon(
-                    icon,
-                    color: Colors.black,
-                    size: 14,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

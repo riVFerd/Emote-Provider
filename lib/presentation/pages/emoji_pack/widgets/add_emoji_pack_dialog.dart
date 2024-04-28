@@ -5,6 +5,7 @@ import 'package:dc_universal_emot/data/models/emoji/emoji_hive_model.dart';
 import 'package:dc_universal_emot/data/models/emoji_pack/emoji_pack_hive_model.dart';
 import 'package:dc_universal_emot/domain/entities/emoji_pack.dart';
 import 'package:dc_universal_emot/presentation/bloc/emoji_pack/emoji_pack_bloc.dart';
+import 'package:dc_universal_emot/presentation/widgets/add_pack_dialog.dart';
 import 'package:dc_universal_emot/services/file_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -116,7 +117,7 @@ class _AddEmojiPackDialogState extends State<AddEmojiPackDialog> {
                 ),
               ),
               _emojiPackImage == null
-                  ? _buildPickImageButton(
+                  ? buildPickImageButton(
                       onPressed: () async {
                         final pickedImage = await fileServices.pickSingleImage();
                         if (pickedImage == null) return;
@@ -125,7 +126,7 @@ class _AddEmojiPackDialogState extends State<AddEmojiPackDialog> {
                         });
                       },
                     )
-                  : _buildEmojiImage(
+                  : buildImage(
                       onIconPressed: () async {
                         final pickedImage = await fileServices.pickSingleImage();
                         if (pickedImage == null) return;
@@ -133,7 +134,7 @@ class _AddEmojiPackDialogState extends State<AddEmojiPackDialog> {
                           _emojiPackImage = pickedImage;
                         });
                       },
-                      emojiImage: _emojiPackImage!,
+                      image: _emojiPackImage!,
                       icon: Icons.mode_edit,
                     ),
               TextField(
@@ -153,7 +154,7 @@ class _AddEmojiPackDialogState extends State<AddEmojiPackDialog> {
                     runSpacing: 8,
                     alignment: WrapAlignment.center,
                     children: [
-                      _buildPickImageButton(
+                      buildPickImageButton(
                         height: 64,
                         width: 64,
                         onPressed: () async {
@@ -165,10 +166,10 @@ class _AddEmojiPackDialogState extends State<AddEmojiPackDialog> {
                         },
                       ),
                       ..._emojiImages.map((emojiImage) {
-                        return _buildEmojiImage(
+                        return buildImage(
                           height: 64,
                           width: 64,
-                          emojiImage: emojiImage,
+                          image: emojiImage,
                           icon: Icons.delete,
                           onIconPressed: () {
                             setState(() {
@@ -191,75 +192,6 @@ class _AddEmojiPackDialogState extends State<AddEmojiPackDialog> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildPickImageButton({
-    double height = 84,
-    double width = 84,
-    VoidCallback? onPressed,
-  }) {
-    return InkWell(
-      onTap: onPressed,
-      child: Container(
-        height: height,
-        width: width,
-        decoration: BoxDecoration(
-          color: darkGray200,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: const Center(
-          child: Icon(Icons.add, color: Colors.white),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEmojiImage({
-    double height = 84,
-    double width = 84,
-    required IconData icon,
-    required VoidCallback onIconPressed,
-    required File emojiImage,
-  }) {
-    return Container(
-      height: height,
-      width: width,
-      decoration: BoxDecoration(
-        color: darkGray200,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      padding: const EdgeInsets.all(8),
-      child: Stack(
-        children: [
-          Align(
-            alignment: Alignment.center,
-            child: Image.file(emojiImage),
-          ),
-          Positioned(
-            right: 0,
-            top: 0,
-            child: InkWell(
-              onTap: onIconPressed,
-              child: Container(
-                height: 24,
-                width: 24,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.8),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Center(
-                  child: Icon(
-                    icon,
-                    color: Colors.black,
-                    size: 14,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
