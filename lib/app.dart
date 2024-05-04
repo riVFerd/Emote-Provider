@@ -1,4 +1,3 @@
-import 'package:dc_universal_emot/data/repositories/sticker_pack_hive_repository.dart';
 import 'package:dc_universal_emot/presentation/bloc/emoji_pack/emoji_pack_bloc.dart';
 import 'package:dc_universal_emot/presentation/bloc/sticker_pack/sticker_pack_bloc.dart';
 import 'package:dc_universal_emot/presentation/pages/emoji_pack/emoji_pack_page.dart';
@@ -13,7 +12,7 @@ import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:provider/provider.dart';
 
 import 'constants/color_constant.dart';
-import 'data/repositories/emoji_pack_hive_repository.dart';
+import 'injections/injection.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -22,12 +21,8 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => EmojiPackBloc(emojiPackRepository: EmojiPackHiveRepository()),
-        ),
-        BlocProvider(
-          create: (context) => StickerPackBloc(stickerPackRepository: StickerPackHiveRepository()),
-        ),
+        BlocProvider(create: (context) => getIt<EmojiPackBloc>()),
+        BlocProvider(create: (context) => getIt<StickerPackBloc>()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

@@ -4,9 +4,11 @@ import 'package:dc_universal_emot/domain/entities/emoji_pack.dart';
 import 'package:dc_universal_emot/domain/repositories/emoji_pack_repository.dart';
 import 'package:dc_universal_emot/services/file_service.dart';
 import 'package:hive/hive.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../constants/constant.dart';
 
+@Singleton(as: EmojiPackRepository)
 class EmojiPackHiveRepository implements EmojiPackRepository {
   static late Box<EmojiPackHiveModel> _emojiPackBox;
 
