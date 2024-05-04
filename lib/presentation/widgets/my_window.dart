@@ -37,6 +37,7 @@ class _MyWindowState extends State<MyWindow> with WindowListener {
         const WindowOptions(
           title: 'Emote provider',
           size: Size(680, 540),
+          minimumSize: Size(680, 540),
           titleBarStyle: TitleBarStyle.normal,
         ),
         () async {

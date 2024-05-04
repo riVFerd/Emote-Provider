@@ -1,17 +1,20 @@
 import 'package:bloc/bloc.dart';
 import 'package:dc_universal_emot/data/models/sticker/sticker_hive_model.dart';
 import 'package:dc_universal_emot/domain/repositories/sticker_pack_repository.dart';
+import 'package:dc_universal_emot/injections/injection.dart';
 import 'package:dc_universal_emot/services/file_service.dart';
 import 'package:equatable/equatable.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../../domain/entities/sticker_pack.dart';
 
 part 'sticker_pack_event.dart';
 part 'sticker_pack_state.dart';
 
+@LazySingleton()
 class StickerPackBloc extends Bloc<StickerPackEvent, StickerPackState> {
   final StickerPackRepository stickerPackRepository;
-  final FileService fileServices = FileService();
+  final FileService fileServices = getIt<FileService>();
 
   StickerPackBloc({required this.stickerPackRepository})
       : super(const StickerPackInitial(stickerPacks: [])) {

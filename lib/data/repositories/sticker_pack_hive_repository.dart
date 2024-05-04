@@ -4,9 +4,11 @@ import 'package:dc_universal_emot/domain/entities/sticker_pack.dart';
 import 'package:dc_universal_emot/domain/repositories/sticker_pack_repository.dart';
 import 'package:dc_universal_emot/services/file_service.dart';
 import 'package:hive/hive.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../constants/constant.dart';
 
+@Singleton(as: StickerPackRepository)
 class StickerPackHiveRepository implements StickerPackRepository {
   static late Box<StickerPackHiveModel> _stickerPackBox;
 

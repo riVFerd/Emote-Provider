@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:dc_universal_emot/constants/constant.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image/image.dart' as img;
+import 'package:injectable/injectable.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
+@lazySingleton
 class FileService {
   /// Save image to application documents directory,
   /// returning new path of the saved image.
