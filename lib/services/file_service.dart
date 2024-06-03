@@ -5,7 +5,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:image/image.dart' as img;
 import 'package:injectable/injectable.dart';
 import 'package:path/path.dart' as path;
-import 'package:path_provider/path_provider.dart';
 
 @lazySingleton
 class FileService {
@@ -18,7 +17,7 @@ class FileService {
     String? prefixName,
     int savedImageHeight = 50,
   }) async {
-    final documentsDirectory = await getApplicationDocumentsDirectory();
+    final documentsDirectory = Directory.current;
     final documentsPath = path.join(documentsDirectory.path, APPLICATION_DIR_NAME);
 
     if (!Directory(documentsPath).existsSync()) {

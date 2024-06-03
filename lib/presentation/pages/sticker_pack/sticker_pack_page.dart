@@ -6,11 +6,9 @@ import 'package:dc_universal_emot/presentation/pages/sticker_pack/sticker_pack_p
 import 'package:dc_universal_emot/presentation/pages/sticker_pack/widgets/sticker_sidebar.dart';
 import 'package:dc_universal_emot/presentation/widgets/app_loading.dart';
 import 'package:dc_universal_emot/presentation/widgets/emot_card.dart';
-import 'package:dc_universal_emot/services/clipboard_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-import 'package:window_manager/window_manager.dart';
 
 import '../../bloc/sticker_pack/sticker_pack_bloc.dart';
 
@@ -120,10 +118,9 @@ class _StickerPackPageState extends State<StickerPackPage> {
                             contextMenu: TextButton(
                               onPressed: () async {
                                 try {
-                                  await ClipboardService.writeImage(sticker.originalPath);
-                                  await windowManager.hide();
-                                  if (context.mounted) context.contextMenuOverlay.hide();
-                                  ClipboardService.simulatePaste();
+                                  context
+                                      .read<StickerPackProvider>()
+                                      .pasteSticker(sticker.originalPath, context: context);
                                 } catch (e) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
@@ -145,9 +142,9 @@ class _StickerPackPageState extends State<StickerPackPage> {
                                 _selectedSticker.value = sticker;
                               },
                               onTap: () async {
-                                await ClipboardService.writeImage(sticker.stickerPath);
-                                await windowManager.hide();
-                                ClipboardService.simulatePaste();
+                                context
+                                    .read<StickerPackProvider>()
+                                    .pasteSticker(sticker.stickerPath);
                               },
                               emotPath: sticker.stickerPath,
                               height: 68,

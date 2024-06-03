@@ -6,9 +6,9 @@ import 'package:dc_universal_emot/presentation/pages/sticker_pack/sticker_pack_p
 import 'package:dc_universal_emot/presentation/pages/sticker_pack/sticker_pack_provider.dart';
 import 'package:dc_universal_emot/presentation/widgets/my_window.dart';
 import 'package:dc_universal_emot/presentation/widgets/top_bar.dart';
+import 'package:dc_universal_emot/services/platform_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:provider/provider.dart';
 
 import 'constants/color_constant.dart';
@@ -51,10 +51,11 @@ class App extends StatelessWidget {
                           TabMode.emoji => const EmojiPackPage(),
                           TabMode.sticker => const StickerPackPage(),
                           TabMode.settings => Container(
-                              child: HotKeyRecorder(
-                                onHotKeyRecorded: (hotKey) {
-                                  print('HotKey recorded: $hotKey');
+                              child: TextButton(
+                                onPressed: () {
+                                  PlatformServices().simulatePaste();
                                 },
+                                child: const Text('Simulate Paste'),
                               ),
                             ),
                         };
@@ -76,6 +77,7 @@ class AppProvider with ChangeNotifier {
   final _searchController = TextEditingController();
 
   TabMode get currentTab => _currentTab;
+
   TextEditingController get searchController => _searchController;
 
   void setCurrentTab(TabMode tab) {
