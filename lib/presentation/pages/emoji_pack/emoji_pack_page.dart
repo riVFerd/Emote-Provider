@@ -5,11 +5,9 @@ import 'package:dc_universal_emot/presentation/pages/emoji_pack/emoji_pack_provi
 import 'package:dc_universal_emot/presentation/pages/emoji_pack/widgets/emoji_sidebar.dart';
 import 'package:dc_universal_emot/presentation/widgets/app_loading.dart';
 import 'package:dc_universal_emot/presentation/widgets/emot_card.dart';
-import 'package:dc_universal_emot/services/clipboard_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-import 'package:window_manager/window_manager.dart';
 
 import '../../bloc/emoji_pack/emoji_pack_bloc.dart';
 
@@ -122,9 +120,7 @@ class _EmojiPackPageState extends State<EmojiPackPage> {
                               _selectedEmoji.value = emoji;
                             },
                             onTap: () async {
-                              await ClipboardService.writeImage(emoji.emojiPath);
-                              await windowManager.hide();
-                              ClipboardService.simulatePaste();
+                              context.read<EmojiPackProvider>().pasteEmoji(emoji.emojiPath);
                             },
                             emotPath: emoji.emojiPath,
                             height: 68,

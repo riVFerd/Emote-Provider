@@ -1,22 +1,28 @@
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:injectable/injectable.dart';
 import 'package:keypress_simulator/keypress_simulator.dart';
 import 'package:super_clipboard/super_clipboard.dart';
 
+@singleton
 class ClipboardService {
-  static Future<void> writeImage(String path) async {
+  final clipboardWriter = ClipboardWriter.instance;
+
+  Future<void> writeImage(String path) async {
     final item = DataWriterItem();
     item.add(Formats.png(File(path).readAsBytesSync()));
-    await ClipboardWriter.instance.write([item]);
+    await clipboardWriter.write([item]);
   }
 
-  static Future<void> simulatePaste() async {
-    keyPressSimulator.simulateKeyDown(
+  Future<void> simulatePaste() async {
+    await Future.delayed(const Duration(milliseconds: 1000));
+    await keyPressSimulator.simulateKeyDown(
       PhysicalKeyboardKey.keyV,
       [ModifierKey.controlModifier],
     );
-    keyPressSimulator.simulateKeyUp(
+    await Future.delayed(const Duration(milliseconds: 1000));
+    await keyPressSimulator.simulateKeyUp(
       PhysicalKeyboardKey.keyV,
       [ModifierKey.controlModifier],
     );

@@ -1,71 +1,117 @@
+#include <flutter/event_channel.h>
+#include <flutter/event_sink.h>
+#include <flutter/event_stream_handler_functions.h>
+#include <flutter/method_channel.h>
+#include <flutter/standard_method_codec.h>
 #include "flutter_window.h"
 
 #include <optional>
 
 #include "flutter/generated_plugin_registrant.h"
 
-FlutterWindow::FlutterWindow(const flutter::DartProject& project)
-    : project_(project) {}
+FlutterWindow::FlutterWindow(const flutter::DartProject &project)
+        : project_(project) {}
 
 FlutterWindow::~FlutterWindow() {}
 
 bool FlutterWindow::OnCreate() {
-  if (!Win32Window::OnCreate()) {
-    return false;
-  }
+    if (!Win32Window::OnCreate()) {
+        return false;
+    }
 
-  RECT frame = GetClientArea();
+    RECT frame = GetClientArea();
 
-  // The size here must match the window dimensions to avoid unnecessary surface
-  // creation / destruction in the startup path.
-  flutter_controller_ = std::make_unique<flutter::FlutterViewController>(
-      frame.right - frame.left, frame.bottom - frame.top, project_);
-  // Ensure that basic setup of the controller was successful.
-  if (!flutter_controller_->engine() || !flutter_controller_->view()) {
-    return false;
-  }
-  RegisterPlugins(flutter_controller_->engine());
-  SetChildContent(flutter_controller_->view()->GetNativeWindow());
+    // The size here must match the window dimensions to avoid unnecessary surface
+    // creation / destruction in the startup path.
+    flutter_controller_ = std::make_unique<flutter::FlutterViewController>(
+            frame.right - frame.left, frame.bottom - frame.top, project_);
+    // Ensure that basic setup of the controller was successful.
+    if (!flutter_controller_->engine() || !flutter_controller_->view()) {
+        return false;
+    }
+    RegisterPlugins(flutter_controller_->engine());
 
-  flutter_controller_->engine()->SetNextFrameCallback([&]() {
-    this->Show();
-  });
+    // Custom Windows Code Start Here
+    flutter::MethodChannel<> channel(
+            flutter_controller_->engine()->messenger(),
+            "com.rivferd.dev/superClipboard",
+            &flutter::StandardMethodCodec::GetInstance()
+    );
+    channel.SetMethodCallHandler(
+            [](const flutter::MethodCall<> &call,
+               std::unique_ptr<flutter::MethodResult<>> result) {
+                if (call.method_name() == "simulatePaste") {
+//                    result->Success(flutter::EncodableValue("successCalled"));
+                    // simulate pressing ctrl + v
+                    INPUT input[4] = {};
+                    memset(input, 0, sizeof(input));
 
-  // Flutter can complete the first frame before the "show window" callback is
-  // registered. The following call ensures a frame is pending to ensure the
-  // window is shown. It is a no-op if the first frame hasn't completed yet.
-  flutter_controller_->ForceRedraw();
+                    input[0].type = INPUT_KEYBOARD;
+                    input[0].ki.wVk = VK_CONTROL;
 
-  return true;
+                    input[1].type = INPUT_KEYBOARD;
+                    input[1].ki.wVk = 'V';
+
+                    input[2].type = INPUT_KEYBOARD;
+                    input[2].ki.wVk = 'V';
+                    input[2].ki.dwFlags = KEYEVENTF_KEYUP;
+
+                    input[3].type = INPUT_KEYBOARD;
+                    input[3].ki.wVk = VK_CONTROL;
+                    input[3].ki.dwFlags = KEYEVENTF_KEYUP;
+                    SendInput(4, input, sizeof(INPUT));
+                    result->Success();
+                } else {
+                    result->NotImplemented();
+                }
+            });
+
+    SetChildContent(flutter_controller_->view()->GetNativeWindow());
+
+    flutter_controller_->engine()->SetNextFrameCallback([&]() {
+        this->Show();
+    });
+
+    // Flutter can complete the first frame before the "show window" callback is
+    // registered. The following call ensures a frame is pending to ensure the
+    // window is shown. It is a no-op if the first frame hasn't completed yet.
+    flutter_controller_->ForceRedraw();
+
+    return true;
 }
 
 void FlutterWindow::OnDestroy() {
-  if (flutter_controller_) {
-    flutter_controller_ = nullptr;
-  }
+    if (flutter_controller_) {
+        flutter_controller_ = nullptr;
+    }
 
-  Win32Window::OnDestroy();
+    Win32Window::OnDestroy();
 }
 
 LRESULT
 FlutterWindow::MessageHandler(HWND hwnd, UINT const message,
                               WPARAM const wparam,
-                              LPARAM const lparam) noexcept {
-  // Give Flutter, including plugins, an opportunity to handle window messages.
-  if (flutter_controller_) {
-    std::optional<LRESULT> result =
+                              LPARAM const lparam)
+
+noexcept {
+// Give Flutter, including plugins, an opportunity to handle window messages.
+if (flutter_controller_) {
+std::optional <LRESULT> result =
         flutter_controller_->HandleTopLevelWindowProc(hwnd, message, wparam,
                                                       lparam);
-    if (result) {
-      return *result;
-    }
-  }
+if (result) {
+return *
+result;
+}
+}
 
-  switch (message) {
-    case WM_FONTCHANGE:
-      flutter_controller_->engine()->ReloadSystemFonts();
-      break;
-  }
+switch (message) {
+case WM_FONTCHANGE:
+flutter_controller_->engine()->ReloadSystemFonts();
+break;
+}
 
-  return Win32Window::MessageHandler(hwnd, message, wparam, lparam);
+return
+Win32Window::MessageHandler(hwnd, message, wparam, lparam
+);
 }
